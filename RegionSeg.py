@@ -7,7 +7,8 @@ coordinates specified in the configuration file
 This script uses files present in Utils directory 
 and assumes pandas and numpy are installed in the system
 
-This file 
+This file loads the data of zone 10 and 11 and crops the
+necessary data for the given ROI and combined them and saves them
 """
 import sys
 import os

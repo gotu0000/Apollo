@@ -17,6 +17,8 @@ class AISDataManager():
         saves data from pandas dataframe to csv file
     filter_based_on_lon_lat(self, dFObj, lonMin, lonMax, latMin, latMax)
         crops the data to given ROI
+    get_list_of_unique_mmsi(self, dFObj)
+        get list of unique MMSI in a given data frame
     """
 
     def __init__(self):
@@ -92,6 +94,22 @@ class AISDataManager():
                             & (dFObj[c.LAT_COL_NAME] < latMax) \
                             ]
         return filteredDF
+
+    def get_list_of_unique_mmsi(self, dFObj):
+        """
+        To get unique entries of MMSI
+
+        Parameters
+        ---------
+        dFObj : pandas dataframe
+            dataframe object from which we need unique MMSI
+
+        TODO:
+            does not check for the presence of MMSI column
+            add a check if needed
+        """
+        ret = dFObj[c.MMSI_COL_NAME].unique()
+        return ret
             
 if __name__ == '__main__':
     aDMTest = AISDataManager()
