@@ -19,6 +19,10 @@ class AISDataManager():
         crops the data to given ROI
     get_list_of_unique_mmsi(self, dFObj)
         get list of unique MMSI in a given data frame
+    filter_based_on_mmsi(self, dFObj, mMSINum)
+        filter MMSI specific data
+    def formate_time(self, dFObj, colName, inPlace = False)
+        add date time column which has time64 formate
     """
 
     def __init__(self):
@@ -110,6 +114,51 @@ class AISDataManager():
         """
         ret = dFObj[c.MMSI_COL_NAME].unique()
         return ret
+
+    def filter_based_on_mmsi(self, dFObj, mMSINum):
+        """
+        Get dataframe consisting of MMSI specified by mMSINum
+
+        Parameters
+        ---------
+        dFObj : pandas dataframe
+            dataframe object from which we need MMSI specific data
+        mMSINum : str or int
+            specif MMSI whose data we need
+        """
+
+        #filtered data frame
+        #based on MMSI number
+        filteredDF = dFObj[dFObj[c.MMSI_COL_NAME] == mMSINum]
+        return filteredDF
+
+    def formate_time(self, dFObj, colName, inPlace = False):
+        """
+        Makes type of Basetime column of the dataset ob Time64 formate
+
+        Parameters
+        ---------
+        dFObj : pandas dataframe
+            dataframe object whose basetime needs to be converted
+        colName : str
+            name of the BaseTime column
+        inPlace : bool 
+            in place or not, pass true to save memory
+        """
+        #will return same DF with extra column
+        #this will change the original DF if we change the return value
+        if(inPlace == False):
+            retDF = dFObj.copy()
+        else:
+            retDF = dFObj
+        #check for whether date time column is already there or not
+        if(colName in retDF.columns):
+            if(retDF.loc[:, colName].dtypes == np.dtype('object')):
+                retDF.loc[:, colName] = pd.to_datetime(retDF[colName])
+        else:
+            with pd.option_context('mode.chained_assignment', None):
+                retDF.loc[:, colName] = pd.to_datetime(retDF[c.BASE_TIME_COL_NAME], format='%Y-%m-%dT%H:%M:%S')
+        return retDF
             
 if __name__ == '__main__':
     aDMTest = AISDataManager()
