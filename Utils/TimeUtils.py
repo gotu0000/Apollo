@@ -66,3 +66,5 @@ def get_month_from_count(hourCount):
         return 11
     else:
         return 12
+
+NUM_SEC_IN_MIN = 60
