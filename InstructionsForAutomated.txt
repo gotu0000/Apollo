@@ -1,0 +1,263 @@
+#First Get dataset from cadstre
+#Unzip zip files
+#Year 15 16 and 17 data for zone 10 and 11
+#Directory structure
+Data
+----RawData
+--------2020
+------------AIS_2020_01_11.csv
+------------AIS_2020_02_11.csv
+------------AIS_2020_03_11.csv
+------------AIS_2020_04_11.csv
+------------AIS_2020_05_11.csv
+------------AIS_2020_06_11.csv
+------------AIS_2020_07_11.csv
+------------AIS_2020_08_11.csv
+------------AIS_2020_09_11.csv
+------------AIS_2020_10_11.csv
+------------AIS_2020_11_11.csv
+------------AIS_2020_12_11.csv
+------------AIS_2020_01_10.csv
+------------AIS_2020_02_10.csv
+------------AIS_2020_03_10.csv
+------------AIS_2020_04_10.csv
+------------AIS_2020_05_10.csv
+------------AIS_2020_06_10.csv
+------------AIS_2020_07_10.csv
+------------AIS_2020_08_10.csv
+------------AIS_2020_09_10.csv
+------------AIS_2020_10_10.csv
+------------AIS_2020_11_10.csv
+------------AIS_2020_12_10.csv
+--------2019
+------------AIS_2019_01_11.csv
+------------AIS_2019_02_11.csv
+------------AIS_2019_03_11.csv
+------------AIS_2019_04_11.csv
+------------AIS_2019_05_11.csv
+------------AIS_2019_06_11.csv
+------------AIS_2019_07_11.csv
+------------AIS_2019_08_11.csv
+------------AIS_2019_09_11.csv
+------------AIS_2019_10_11.csv
+------------AIS_2019_11_11.csv
+------------AIS_2019_12_11.csv
+------------AIS_2019_01_10.csv
+------------AIS_2019_02_10.csv
+------------AIS_2019_03_10.csv
+------------AIS_2019_04_10.csv
+------------AIS_2019_05_10.csv
+------------AIS_2019_06_10.csv
+------------AIS_2019_07_10.csv
+------------AIS_2019_08_10.csv
+------------AIS_2019_09_10.csv
+------------AIS_2019_10_10.csv
+------------AIS_2019_11_10.csv
+------------AIS_2019_12_10.csv
+--------2018
+............
+--------2017
+............
+--------2016
+............
+--------2015
+............
+----M122_00_M118_50_33_40_36_40
+--------20_01.csv
+--------20_02.csv
+--------20_03.csv
+--------20_04.csv
+--------20_05.csv
+--------20_06.csv
+--------20_07.csv
+--------20_08.csv
+--------20_09.csv
+--------20_10.csv
+--------20_11.csv
+--------20_12.csv
+--------19_01.csv
+--------19_02.csv
+--------19_03.csv
+--------19_04.csv
+--------19_05.csv
+--------19_06.csv
+--------19_07.csv
+--------19_08.csv
+--------19_09.csv
+--------19_10.csv
+--------19_11.csv
+--------19_12.csv
+--------MMSI_1004
+--------MMSI_1004_TRAIN_INTP
+--------MMSI_1004_TEST_INTP
+--------MMSI_1024
+--------MMSI_1024_TRAIN_INTP
+--------MMSI_1024_TEST_INTP
+--------MMSI_15
+------------01
+----------------368141490.csv
+----------------368141490_Sorted.csv
+.........................
+------------02
+------------03
+------------04
+------------05
+------------06
+------------07
+------------08
+------------09
+------------10
+------------11
+------------12
+--------MMSI_16
+...............
+--------MMSI_17
+...............
+--------MMSI_18
+...............
+--------MMSI_19
+...............
+--------MMSI_20
+...............
+--------MMSI_15_16_17_18_19_20_COMBINED
+------------368141490.csv
+------------368141490_Sorted.csv
+.........................
+--------Models
+------------TS_5
+----------------MODEL_MULTI_TASK_1000_MSE.h5
+----------------XDataTS.npy
+----------------YData.npy
+----------------trainWholeErr_30NP.npy
+----------------trainWholeErr_60NP.npy
+----------------trainWholeErr_90NP.npy
+----------------trainWholeErr_120NP.npy
+----------------trainWholeErr_150NP.npy
+----------------trainWholeErr_180NP.npy
+----------------trainWholeErr_210NP.npy
+----------------trainWholeErr_240NP.npy
+----------------testWholeErr_30NP.npy
+----------------testWholeErr_60NP.npy
+----------------testWholeErr_90NP.npy
+----------------testWholeErr_120NP.npy
+----------------testWholeErr_150NP.npy
+----------------testWholeErr_180NP.npy
+----------------testWholeErr_210NP.npy
+----------------testWholeErr_240NP.npy
+------------TS_10
+.................
+------------TS_15
+.................
+------------TS_30
+.................
+--------Output
+------------HeatMap
+------------1004_Test.csv
+------------1004_Train.csv
+------------1024_Test.csv
+------------1024_Train.csv
+------------MMSIList_15_16_17_18_19_20_1004_0.txt
+------------MMSIList_15_16_17_18_19_20_1024_0.txt
+------------MMSIList_15_16_17_18_19_20.txt
+------------MMSIListType_15_16_17_18_19_20.csv
+------------MMSITypleList_15_16_17_18_19_20.txt
+------------TrackLen_1004.csv
+------------TrackLen_1024.csv
+
+Update Config file.
+[REGION]
+LON_MIN = -122.00
+LON_MAX = -118.50
+LAT_MIN = 33.40
+LAT_MAX = 36.40
+
+#then region segment
+#Update Config file.
+[REGION_SEG]
+SOURCE_LOC_AFFIX = /home/jcharla/LiporLab/Data/RawData/
+DEST_LOC_AFFIX = /home/jcharla/LiporLab/Data/
+FILE_SUFFIX =
+YEARS_TO_CONSIDER = 20
+
+python RegionSeg.py 
+
+#update YEARS_TO_CONSIDER for 15, 16, 17, 18, and 19 and run python RegionSeg.py
+#you can also give list directly if you have sufficient memory, i.e. YEARS_TO_CONSIDER = 15,16,17,18,19,20
+
+#then generate list of vessel names for that region
+#Update Config file.
+[GEN_VESSEL_LIST_TXT]
+SRC_DIR_NAME = M122_00_M118_50_33_40_36_40
+SOURCE_LOC_AFFIX = /home/jcharla/LiporLab/Data/
+FILE_SUFFIX = 
+YEARS_TO_CONSIDER = 15,16,17,18,19,20
+DEST_FILE_NAME = /home/jcharla/LiporLab/Data/M122_00_M118_50_33_40_36_40/Output/MMSIList_15_16_17_18_19_20.txt
+
+python GenVesselList.py
+
+#Segregate individual vessel data assumes directory structure to 
+#be present MMSI_15, MMSI_16, .....
+#Update Config file.
+SRC_DIR_NAME = M122_00_M118_50_33_40_36_40
+SOURCE_LOC_AFFIX = /home/jcharla/LiporLab/Data/
+YEARS_TO_CONSIDER = 15,16,17,18,19,20
+MMSI_FILE = /home/jcharla/LiporLab/Data/M122_00_M118_50_33_40_36_40/Output/MMSIList_15_16_17_18_19_20.txt
+
+python SegVessel.py
+
+#Combine the monthly based data into a single file
+#each file would consist data of a vessel of a particular MMSI
+#Update Config file.
+[COMBINE_VESSEL]
+SOURCE_DIR_NAME = /home/jcharla/LiporLab/Data/M122_00_M118_50_33_40_36_40/
+MMSI_FILE = /home/jcharla/LiporLab/Data/M122_00_M118_50_33_40_36_40/Output/MMSIList_15_16_17_18_19_20.txt
+DEST_DIR = /home/jcharla/LiporLab/Data/M122_00_M118_50_33_40_36_40/MMSI_15_16_17_18_19_20_COMBINED/
+YEARS_TO_CONSIDER = 15,16,17,18,19,20
+
+python CombineVessel.py
+
+#generate vessel type file for each MMSI present in MMSIList_15_16_17_18_19_20.txt
+#Update Config file.
+[GEN_VESSEL_TYPE]
+SOURCE_DIR = /home/jcharla/LiporLab/Data/M122_00_M118_50_33_40_36_40/MMSI_15_16_17_18_19_20_COMBINED/
+MMSI_FILE = /home/jcharla/LiporLab/Data/M122_00_M118_50_33_40_36_40/Output/MMSIList_15_16_17_18_19_20.txt
+TYPE_LIST_DEST_FILE = /home/jcharla/LiporLab/Data/M122_00_M118_50_33_40_36_40/Output/MMSITypleList_15_16_17_18_19_20.txt
+DEST_FILE = /home/jcharla/LiporLab/Data/M122_00_M118_50_33_40_36_40/Output/MMSIListType_15_16_17_18_19_20.csv
+
+python GenVesselTypeFile.py
+
+#Generate vessel list of individual type like 1004 and 1024
+#Update Config file.
+[GEN_VESSEL_LIST_OF_TYPE_FROM_RAW_TYPE]
+MMSI_TYPE_FILE = /home/jcharla/LiporLab/Data/M122_00_M118_50_33_40_36_40/Output/MMSIListType_15_16_17_18_19_20.csv
+DESIRED_TYPE = 1004.0
+MMSI_SPEC_TYPE_DEST_FILE = /home/jcharla/LiporLab/Data/M122_00_M118_50_33_40_36_40/Output/MMSIList_15_16_17_18_19_20_1004_0.txt
+
+python GenVesselListBasedOnRawType.py
+
+#Update Config file.
+[GEN_VESSEL_LIST_OF_TYPE_FROM_RAW_TYPE]
+MMSI_TYPE_FILE = /home/jcharla/LiporLab/Data/M122_00_M118_50_33_40_36_40/Output/MMSIListType_15_16_17_18_19_20.csv
+DESIRED_TYPE = 1024.0
+MMSI_SPEC_TYPE_DEST_FILE = /home/jcharla/LiporLab/Data/M122_00_M118_50_33_40_36_40/Output/MMSIList_15_16_17_18_19_20_1024_0.txt
+
+python GenVesselListBasedOnRawType.py
+
+#Generate trajectory of the vessel
+#trajectory can be considered as continuous stream of data
+#Update Config file.
+[GEN_VESSEL_TRAJ]
+SRC_DIR = /home/jcharla/LiporLab/Data/M122_00_M118_50_33_40_36_40/MMSI_15_16_17_18_19_20_COMBINED/
+MMSI_FILE = /home/jcharla/LiporLab/Data/M122_00_M118_50_33_40_36_40/Output/MMSIList_15_16_17_18_19_20_1004_0.txt
+DEST_DIR = /home/jcharla/LiporLab/Data/M122_00_M118_50_33_40_36_40/MMSI_1004/
+
+python GenVesselTraj.py
+
+#Update Config file.
+[GEN_VESSEL_TRAJ]
+SRC_DIR = /home/jcharla/LiporLab/Data/M122_00_M118_50_33_40_36_40/MMSI_15_16_17_18_19_20_COMBINED/
+MMSI_FILE = /home/jcharla/LiporLab/Data/M122_00_M118_50_33_40_36_40/Output/MMSIList_15_16_17_18_19_20_1024_0.txt
+DEST_DIR = /home/jcharla/LiporLab/Data/M122_00_M118_50_33_40_36_40/MMSI_1024/
+
+python GenVesselTraj.py
+
