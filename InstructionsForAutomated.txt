@@ -150,12 +150,28 @@ Data
 .................
 ------------TS_30
 .................
+------------TS_GridSOGCOG_5
+.................
+------------TS_GridSOGCOG_10
+.................
+------------TS_GridSOGCOG_15
+.................
+------------TS_GridSOGCOG_30
+.................
 --------Output
 ------------HeatMap
 ------------1004_Test.csv
 ------------1004_Train.csv
 ------------1024_Test.csv
 ------------1024_Train.csv
+------------COG_Mean_1004.npy
+------------COG_Mean_1024.npy
+------------COG_Median_1004.npy
+------------COG_Median_1024.npy
+------------SOG_Mean_1004.npy
+------------SOG_Mean_1024.npy
+------------SOG_Median_1004.npy
+------------SOG_Median_1024.npy
 ------------MMSIList_15_16_17_18_19_20_1004_0.txt
 ------------MMSIList_15_16_17_18_19_20_1024_0.txt
 ------------MMSIList_15_16_17_18_19_20.txt
@@ -261,3 +277,136 @@ DEST_DIR = /home/jcharla/LiporLab/Data/M122_00_M118_50_33_40_36_40/MMSI_1024/
 
 python GenVesselTraj.py
 
+#######################
+#Noteboook TypeEDA.ipynb can be executed to get number of vessels of each type (to justify why Cargo/Tanker they have maximum number of vessels)(optional)
+#Noteboook TrackLengthSummary.ipynb can be executed to get estimate of number of trajectories with their length (optional)
+#Noteboook TrackLengthSummary.ipynb also tries visualize how average SOG for vessel of different type may be different (to justify type as a feature)(optional)
+#Noteboook SeasonalHM.ipynb can be executed to visualize monthly based traffic (to justify seasonal pattern)(optional)
+
+
+#Execute GetBenchMarkDataset.ipynb
+#This notebook creates train and test list and stores those lists in csv file
+#It first tries to identify trajectories with lenth more than 240 minutes (needed for 4 hour prediction comparision)
+#Then it takes 20% total number of trajectories, and selects those trajectories from these trajectories of 240 minutes (This is to make sure that testing data has all the trajectories for 4 hour prediction)
+
+##Update Config file.
+#This creates interpolated trajectories using nearest neighbour, ideal for training with different timestamps
+#The same script is used for testing trajectories as well
+#Error can be computed on generated testing trajectories 
+[INTERP_TRAJ]
+SRC_DIR = /home/jcharla/LiporLab/Data/M122_00_M118_50_33_40_36_40/MMSI_1004/
+SRC_TRAIN_LIST = /home/jcharla/LiporLab/Data/M122_00_M118_50_33_40_36_40/Output/1004_Train.csv
+DEST_DIR = /home/jcharla/LiporLab/Data/M122_00_M118_50_33_40_36_40/MMSI_1004_TRAIN_INTP/
+
+python InterpolateTrainData.py
+
+##Update Config file.
+[INTERP_TRAJ]
+SRC_DIR = /home/jcharla/LiporLab/Data/M122_00_M118_50_33_40_36_40/MMSI_1004/
+SRC_TRAIN_LIST = /home/jcharla/LiporLab/Data/M122_00_M118_50_33_40_36_40/Output/1004_Test.csv
+DEST_DIR = /home/jcharla/LiporLab/Data/M122_00_M118_50_33_40_36_40/MMSI_1004_TEST_INTP/
+
+python InterpolateTrainData.py
+
+##Update Config file.
+[INTERP_TRAJ]
+SRC_DIR = /home/jcharla/LiporLab/Data/M122_00_M118_50_33_40_36_40/MMSI_1024/
+SRC_TRAIN_LIST = /home/jcharla/LiporLab/Data/M122_00_M118_50_33_40_36_40/Output/1024_Train.csv
+DEST_DIR = /home/jcharla/LiporLab/Data/M122_00_M118_50_33_40_36_40/MMSI_1024_TRAIN_INTP/
+python InterpolateTrainData.py
+
+##Update Config file.
+[INTERP_TRAJ]
+SRC_DIR = /home/jcharla/LiporLab/Data/M122_00_M118_50_33_40_36_40/MMSI_1024/
+SRC_TRAIN_LIST = /home/jcharla/LiporLab/Data/M122_00_M118_50_33_40_36_40/Output/1024_Test.csv
+DEST_DIR = /home/jcharla/LiporLab/Data/M122_00_M118_50_33_40_36_40/MMSI_1024_TEST_INTP/
+
+python InterpolateTrainData.py
+
+##Update Config file.
+[LSTM_MULTI_TASK_TRAIN]
+LON_MIN = -122.00
+LON_MAX = -118.50
+LAT_MIN = 33.40
+LAT_MAX = 36.40
+SRC_DIR_1 = /home/jagir/LiporLab/Data/M122_00_M118_50_33_40_36_40/MMSI_1004_TRAIN_INTP/
+SRC_DIR_TEST_1 = /home/jagir/LiporLab/Data/M122_00_M118_50_33_40_36_40/MMSI_1004_TEST_INTP/
+SRC_DIR_2 = /home/jagir/LiporLab/Data/M122_00_M118_50_33_40_36_40/MMSI_1024_TRAIN_INTP/
+SRC_DIR_TEST_2 = /home/jagir/LiporLab/Data/M122_00_M118_50_33_40_36_40/MMSI_1024_TEST_INTP/
+MODEL_DIR = /home/jagir/LiporLab/Data/M122_00_M118_50_33_40_36_40/Models/TS_30/
+MODEL_TS = 30
+
+#Run LSTMMultiTak.ipynb Notebook
+#This is a multitask model, it predicts SOG and COG as well
+#The notbook is configurable to train the model with different timestamps 5 Minute, 10 Minute, 15, and 30 Minutes
+#The notebook also computes training and testing error
+#For testing data same data is used for all four models, which can be used to do apple to apple comparison
+
+##Update Config file.
+[COMPUTE_AVG_SOG]
+INCR_STEP = 0.01
+INCR_RES = 2
+SRC_TRAIN_LIST = /home/jagir/LiporLab/Data/M122_00_M118_50_33_40_36_40/Output/1004_Train.csv
+SRC_DIR = /home/jagir/LiporLab/Data/M122_00_M118_50_33_40_36_40/MMSI_1004/
+OUTPUT_FILE = /home/jagir/LiporLab/Data/M122_00_M118_50_33_40_36_40/Output/SOG_Mean_1004.npy
+OUTPUT_MED_FILE = /home/jagir/LiporLab/Data/M122_00_M118_50_33_40_36_40/Output/SOG_Median_1004.npy
+
+python ComputeGridSOG.py
+
+##Update Config file.
+[COMPUTE_AVG_SOG]
+INCR_STEP = 0.01
+INCR_RES = 2
+SRC_TRAIN_LIST = /home/jagir/LiporLab/Data/M122_00_M118_50_33_40_36_40/Output/1024_Train.csv
+SRC_DIR = /home/jagir/LiporLab/Data/M122_00_M118_50_33_40_36_40/MMSI_1024/
+OUTPUT_FILE = /home/jagir/LiporLab/Data/M122_00_M118_50_33_40_36_40/Output/SOG_Mean_1024.npy
+OUTPUT_MED_FILE = /home/jagir/LiporLab/Data/M122_00_M118_50_33_40_36_40/Output/SOG_Median_1024.npy
+
+python ComputeGridSOG.py
+
+##Update Config file.
+[COMPUTE_AVG_COG]
+INCR_STEP = 0.01
+INCR_RES = 2
+SRC_TRAIN_LIST = /home/jagir/LiporLab/Data/M122_00_M118_50_33_40_36_40/Output/1004_Train.csv
+SRC_DIR = /home/jagir/LiporLab/Data/M122_00_M118_50_33_40_36_40/MMSI_1004/
+OUTPUT_FILE = /home/jagir/LiporLab/Data/M122_00_M118_50_33_40_36_40/Output/COG_Mean_1004.npy
+OUTPUT_MED_FILE = /home/jagir/LiporLab/Data/M122_00_M118_50_33_40_36_40/Output/COG_Median_1004.npy
+
+python ComputeGridCOG.py
+
+##Update Config file.
+[COMPUTE_AVG_COG]
+INCR_STEP = 0.01
+INCR_RES = 2
+SRC_TRAIN_LIST = /home/jagir/LiporLab/Data/M122_00_M118_50_33_40_36_40/Output/1024_Train.csv
+SRC_DIR = /home/jagir/LiporLab/Data/M122_00_M118_50_33_40_36_40/MMSI_1024/
+OUTPUT_FILE = /home/jagir/LiporLab/Data/M122_00_M118_50_33_40_36_40/Output/COG_Mean_1024.npy
+OUTPUT_MED_FILE = /home/jagir/LiporLab/Data/M122_00_M118_50_33_40_36_40/Output/COG_Median_1024.npy
+
+python ComputeGridCOG.py
+
+##Update Config file.
+[LSTM_GRID_SOG_COG_TRAIN]
+LON_MIN = -122.00
+LON_MAX = -118.50
+LAT_MIN = 33.40
+LAT_MAX = 36.40
+SRC_DIR_1 = /home/jagir/LiporLab/Data/M122_00_M118_50_33_40_36_40/MMSI_1004_TRAIN_INTP/
+SRC_DIR_TEST_1 = /home/jagir/LiporLab/Data/M122_00_M118_50_33_40_36_40/MMSI_1004_TEST_INTP/
+SRC_1_SOG = /home/jagir/LiporLab/Data/M122_00_M118_50_33_40_36_40/Output/SOG_Median_1004.npy
+SRC_1_COG = /home/jagir/LiporLab/Data/M122_00_M118_50_33_40_36_40/Output/COG_Median_1004.npy
+SRC_DIR_2 = /home/jagir/LiporLab/Data/M122_00_M118_50_33_40_36_40/MMSI_1024_TRAIN_INTP/
+SRC_DIR_TEST_2 = /home/jagir/LiporLab/Data/M122_00_M118_50_33_40_36_40/MMSI_1024_TEST_INTP/
+SRC_2_SOG = /home/jagir/LiporLab/Data/M122_00_M118_50_33_40_36_40/Output/SOG_Median_1024.npy
+SRC_2_COG = /home/jagir/LiporLab/Data/M122_00_M118_50_33_40_36_40/Output/COG_Median_1024.npy
+MODEL_DIR = /home/jagir/LiporLab/Data/M122_00_M118_50_33_40_36_40/Models/TS_GridSOGCOG_30/
+MODEL_TS = 30
+INCR_STEP = 0.01
+INCR_RES = 2
+
+#Execute LSTMGridSOGCOG.ipynb notebook to train the network, which predicts just LAT and LON
+#This notebook is also configurable for different timestamps 5 Minute, 10 Minute, 15, and 30 Minutes
+#and uses grid median of SOG and COG
+#Same testing data is used for error computation
+#So performance of all 8 models can be evaluated
