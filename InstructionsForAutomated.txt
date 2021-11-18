@@ -89,7 +89,9 @@ Data
 --------19_12.csv
 --------MMSI_1004
 --------MMSI_1004_TRAIN_INTP
+--------MMSI_1004_TRAIN_WDEST_INTP
 --------MMSI_1004_TEST_INTP
+--------MMSI_1004_TEST_WDEST_INTP
 --------MMSI_1024
 --------MMSI_1024_TRAIN_INTP
 --------MMSI_1024_TEST_INTP
@@ -158,6 +160,61 @@ Data
 .................
 ------------TS_GridSOGCOG_30
 .................
+------------TS_GridSOGCOG_Dest_5
+.................
+------------TS_GridSOGCOG_Dest_10
+.................
+------------TS_GridSOGCOG_Dest_15
+.................
+------------TS_GridSOGCOG_Dest_30
+.................
+------------JUST_TS_30_5
+.................
+------------JUST_TS_30_10
+.................
+------------JUST_TS_30_15
+.................
+------------JUST_TS_30_30
+.................
+------------JUST_TS_60_5
+.................
+------------JUST_TS_60_10
+.................
+------------JUST_TS_60_15
+.................
+------------JUST_TS_60_30
+.................
+------------TS_Type_30_5
+.................
+------------TS_Type_30_10
+.................
+------------TS_Type_30_15
+.................
+------------TS_Type_30_30
+.................
+------------TS_Type_60_5
+.................
+------------TS_Type_60_10
+.................
+------------TS_Type_60_15
+.................
+------------TS_Type_60_30
+.................
+------------TS_Type_Dest_30_5
+.................
+------------TS_Type_Dest_30_10
+.................
+------------TS_Type_Dest_30_15
+.................
+------------TS_Type_Dest_30_30
+.................
+------------TS_Type_Dest_60_5
+.................
+------------TS_Type_Dest_60_10
+.................
+------------TS_Type_Dest_60_15
+.................
+------------TS_Type_Dest_60_30
 --------Output
 ------------HeatMap
 ------------1004_Test.csv
@@ -410,3 +467,121 @@ INCR_RES = 2
 #and uses grid median of SOG and COG
 #Same testing data is used for error computation
 #So performance of all 8 models can be evaluated
+
+##Update Config file.
+#This creates interpolated trajectories using nearest neighbour, ideal for training with different timestamps also assigns destination to individual trajectories
+[INTERP_TRAJ_DEST]
+SRC_DIR = /home/jagir/LiporLab/Data/M122_00_M118_50_33_40_36_40/MMSI_1004/
+SRC_TRAIN_LIST = /home/jagir/LiporLab/Data/M122_00_M118_50_33_40_36_40/Output/1004_Train.csv
+DEST_DIR = /home/jagir/LiporLab/Data/M122_00_M118_50_33_40_36_40/MMSI_1004_TRAIN_WDEST_INTP/
+
+python InterpolateTrainDataWDest.py
+
+##Update Config file.
+[INTERP_TRAJ_DEST]
+SRC_DIR = /home/jagir/LiporLab/Data/M122_00_M118_50_33_40_36_40/MMSI_1004/
+SRC_TRAIN_LIST = /home/jagir/LiporLab/Data/M122_00_M118_50_33_40_36_40/Output/1004_Test.csv
+DEST_DIR = /home/jagir/LiporLab/Data/M122_00_M118_50_33_40_36_40/MMSI_1004_TEST_WDEST_INTP/
+
+python InterpolateTrainDataWDest.py
+
+##Update Config file.
+[INTERP_TRAJ_DEST]
+SRC_DIR = /home/jagir/LiporLab/Data/M122_00_M118_50_33_40_36_40/MMSI_1024/
+SRC_TRAIN_LIST = /home/jagir/LiporLab/Data/M122_00_M118_50_33_40_36_40/Output/1024_Train.csv
+DEST_DIR = /home/jagir/LiporLab/Data/M122_00_M118_50_33_40_36_40/MMSI_1024_TRAIN_WDEST_INTP/
+
+python InterpolateTrainDataWDest.py
+
+##Update Config file.
+[INTERP_TRAJ_DEST]
+SRC_DIR = /home/jagir/LiporLab/Data/M122_00_M118_50_33_40_36_40/MMSI_1024/
+SRC_TRAIN_LIST = /home/jagir/LiporLab/Data/M122_00_M118_50_33_40_36_40/Output/1024_Test.csv
+DEST_DIR = /home/jagir/LiporLab/Data/M122_00_M118_50_33_40_36_40/MMSI_1024_TEST_WDEST_INTP/
+
+python InterpolateTrainDataWDest.py
+
+##Update Config file.
+[LSTM_TS_TRAIN]
+LON_MIN = -122.00
+LON_MAX = -118.50
+LAT_MIN = 33.40
+LAT_MAX = 36.40
+SRC_DIR_1 = /home/jagir/LiporLab/Data/M122_00_M118_50_33_40_36_40/MMSI_1004_TRAIN_INTP/
+SRC_DIR_TEST_1 = /home/jagir/LiporLab/Data/M122_00_M118_50_33_40_36_40/MMSI_1004_TEST_INTP/
+SRC_DIR_2 = /home/jagir/LiporLab/Data/M122_00_M118_50_33_40_36_40/MMSI_1024_TRAIN_INTP/
+SRC_DIR_TEST_2 = /home/jagir/LiporLab/Data/M122_00_M118_50_33_40_36_40/MMSI_1024_TEST_INTP/
+MODEL_DIR = /home/jagir/LiporLab/Data/M122_00_M118_50_33_40_36_40/Models/JUST_TS_30_30/
+MODEL_TS = 30
+USE_60_30 = 0
+
+#Execute LSTMTS.ipynb notebook to train the network, which predicts just LAT and LON using just LAT and LON coordinates
+#The notebook can take data of upto 60 minutes or 30 minutes, which is configurable by USE_60_30 parameter
+
+##Update Config file.
+[LSTM_TS_TYPE_TRAIN]
+LON_MIN = -122.00
+LON_MAX = -118.50
+LAT_MIN = 33.40
+LAT_MAX = 36.40
+SRC_DIR_1 = /home/jagir/LiporLab/Data/M122_00_M118_50_33_40_36_40/MMSI_1004_TRAIN_INTP/
+SRC_DIR_TEST_1 = /home/jagir/LiporLab/Data/M122_00_M118_50_33_40_36_40/MMSI_1004_TEST_INTP/
+SRC_DIR_2 = /home/jagir/LiporLab/Data/M122_00_M118_50_33_40_36_40/MMSI_1024_TRAIN_INTP/
+SRC_DIR_TEST_2 = /home/jagir/LiporLab/Data/M122_00_M118_50_33_40_36_40/MMSI_1024_TEST_INTP/
+MODEL_DIR = /home/jagir/LiporLab/Data/M122_00_M118_50_33_40_36_40/Models/TS_Type_30_30/
+MODEL_TS = 30
+USE_60_30 = 0
+
+#Execute LSTMTSType.ipynb notebook to train the network, which predicts just LAT and LON using LAT and LON coordinates and Type of vessel as a feature.
+
+##Update Config file.
+[LSTM_TS_TYPE_DEST_TRAIN]
+LON_MIN = -122.00
+LON_MAX = -118.50
+LAT_MIN = 33.40
+LAT_MAX = 36.40
+SRC_DIR_1 = /home/jagir/LiporLab/Data/M122_00_M118_50_33_40_36_40/MMSI_1004_TRAIN_WDEST_INTP/
+SRC_DIR_TEST_1 = /home/jagir/LiporLab/Data/M122_00_M118_50_33_40_36_40/MMSI_1004_TEST_WDEST_INTP/
+SRC_DIR_2 = /home/jagir/LiporLab/Data/M122_00_M118_50_33_40_36_40/MMSI_1024_TRAIN_WDEST_INTP/
+SRC_DIR_TEST_2 = /home/jagir/LiporLab/Data/M122_00_M118_50_33_40_36_40/MMSI_1024_TEST_WDEST_INTP/
+MODEL_DIR = /home/jagir/LiporLab/Data/M122_00_M118_50_33_40_36_40/Models/TS_Type_Dest_30_30/
+MODEL_TS = 30
+USE_60_30 = 0
+
+#Execute LSTMTSTypeDest.ipynb notebook to train the network, which predicts just LAT and LON using LAT and LON coordinates, and Type of vessel, and destination as a feature.
+
+##Update Config file.
+[LSTM_GRID_SOG_COG_DEST_TRAIN]
+LON_MIN = -122.00
+LON_MAX = -118.50
+LAT_MIN = 33.40
+LAT_MAX = 36.40
+SRC_DIR_1 = /home/jagir/LiporLab/Data/M122_00_M118_50_33_40_36_40/MMSI_1004_TRAIN_WDEST_INTP/
+SRC_DIR_TEST_1 = /home/jagir/LiporLab/Data/M122_00_M118_50_33_40_36_40/MMSI_1004_TEST_WDEST_INTP/
+SRC_1_SOG = /home/jagir/LiporLab/Data/M122_00_M118_50_33_40_36_40/Output/SOG_Median_1004.npy
+SRC_1_COG = /home/jagir/LiporLab/Data/M122_00_M118_50_33_40_36_40/Output/COG_Median_1004.npy
+SRC_DIR_2 = /home/jagir/LiporLab/Data/M122_00_M118_50_33_40_36_40/MMSI_1024_TRAIN_WDEST_INTP/
+SRC_DIR_TEST_2 = /home/jagir/LiporLab/Data/M122_00_M118_50_33_40_36_40/MMSI_1024_TEST_WDEST_INTP/
+SRC_2_SOG = /home/jagir/LiporLab/Data/M122_00_M118_50_33_40_36_40/Output/SOG_Median_1024.npy
+SRC_2_COG = /home/jagir/LiporLab/Data/M122_00_M118_50_33_40_36_40/Output/COG_Median_1024.npy
+MODEL_DIR = /home/jagir/LiporLab/Data/M122_00_M118_50_33_40_36_40/Models/TS_GridSOGCOG_Dest_30/
+MODEL_TS = 30
+INCR_STEP = 0.01
+INCR_RES = 2
+
+#Execute LSTMGridSOGCOGDest.ipynb notebook to train the network, which predicts just LAT and LON using LAT and LON coordinates, and Type of vessel, and destination, and GridSOG, and GridCOG as a feature.
+
+##Update Config file.
+[LSTM_MULTI_TASK_DEST_TRAIN]
+LON_MIN = -122.00
+LON_MAX = -118.50
+LAT_MIN = 33.40
+LAT_MAX = 36.40
+SRC_DIR_1 = /home/jagir/LiporLab/Data/M122_00_M118_50_33_40_36_40/MMSI_1004_TRAIN_WDEST_INTP/
+SRC_DIR_TEST_1 = /home/jagir/LiporLab/Data/M122_00_M118_50_33_40_36_40/MMSI_1004_TEST_WDEST_INTP/
+SRC_DIR_2 = /home/jagir/LiporLab/Data/M122_00_M118_50_33_40_36_40/MMSI_1024_TRAIN_WDEST_INTP/
+SRC_DIR_TEST_2 = /home/jagir/LiporLab/Data/M122_00_M118_50_33_40_36_40/MMSI_1024_TEST_WDEST_INTP/
+MODEL_DIR = /home/jagir/LiporLab/Data/M122_00_M118_50_33_40_36_40/Models/TS_DEST_30/
+MODEL_TS = 30
+
+#Execute LSTMMultiTakDest.ipynb notebook
